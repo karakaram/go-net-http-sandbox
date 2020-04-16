@@ -35,6 +35,7 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/pages/"):]
 	page, _ := loadPage(title)
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(page)
 }
 
