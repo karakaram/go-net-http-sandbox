@@ -21,10 +21,22 @@ func main() {
 	//
 	//p2, _ := loadPage("hello")
 	//fmt.Println(p2.Body)
-	http.HandleFunc("/health/", healthHandler)
-	http.HandleFunc("/pages/", pageHandler)
+	http.HandleFunc("/health/", CORSMiddleware(healthHandler))
+	http.HandleFunc("/pages/", CORSMiddleware(pageHandler))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func CORSMiddleware(hander http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		if r.Method == "OPTIONS" {
+			w.Header().Set("Access-Control-Allow-Methods", "*")
+			w.Header().Set("Access-Control-Allow-Headers", "*")
+			return
+		}
+		hander(w, r)
+	}
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +47,6 @@ func pageHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/pages/"):]
 	page, _ := loadPage(title)
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(page)
 }
 
