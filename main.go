@@ -44,10 +44,31 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func pageHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		PageGetHandler(w, r)
+	case "POST":
+		PagePostHandler(w, r)
+	default:
+		http.NotFound(w, r)
+	}
+}
+
+func PageGetHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/pages/"):]
 	page, _ := loadPage(title)
 
 	json.NewEncoder(w).Encode(page)
+}
+
+func PagePostHandler(w http.ResponseWriter, r *http.Request) {
+	raw, _ := ioutil.ReadAll(r.Body)
+	var page Page
+	json.Unmarshal(raw, &page)
+	page.save()
+
+	w.WriteHeader(http.StatusCreated)
+	fmt.Fprintln(w, string(raw))
 }
 
 func (p *Page) save() error {
