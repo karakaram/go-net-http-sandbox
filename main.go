@@ -16,11 +16,6 @@ type Page struct {
 const pageDir = "pages/"
 
 func main() {
-	//p1 := &Page{Title: "hello", Body: "Hello World"}
-	//p1.save()
-	//
-	//p2, _ := loadPage("hello")
-	//fmt.Println(p2.Body)
 	http.HandleFunc("/health/", CORSMiddleware(healthHandler))
 	http.HandleFunc("/pages/", CORSMiddleware(pageHandler))
 
