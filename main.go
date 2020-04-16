@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -21,11 +22,20 @@ func main() {
 	//p2, _ := loadPage("hello")
 	//fmt.Println(p2.Body)
 	http.HandleFunc("/health/", healthHandler)
+	http.HandleFunc("/pages/", pageHandler)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "hello")
+}
+
+func pageHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/pages/"):]
+	page, _ := loadPage(title)
+
+	json.NewEncoder(w).Encode(page)
 }
 
 func (p *Page) save() error {
