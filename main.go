@@ -16,10 +16,11 @@ type Page struct {
 const pageDir = "pages/"
 
 func main() {
-	http.HandleFunc("/health/", CORSMiddleware(healthHandler))
-	http.HandleFunc("/pages/", CORSMiddleware(pageHandler))
+	router := http.NewServeMux()
+	router.HandleFunc("/health/", CORSMiddleware(healthHandler))
+	router.HandleFunc("/pages/", CORSMiddleware(pageHandler))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
 
 func CORSMiddleware(hander http.HandlerFunc) http.HandlerFunc {
