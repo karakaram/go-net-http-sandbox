@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    working_dir: "/work/go-web-application-sandbox"
+    command: [sh, -c, "air"]
+    volumes:
+      - ".:/work/go-web-application-sandbox"
+      - "./.data/go-pkg:/go/pkg/mod/cache"
+    ports:
+      - "8080:8080"
+    env_file:
+      - docker-compose-default.env
+    restart: on-failure
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    volumes:
+      - ./swagger.yaml:/etc/swagger/swagger.yaml
+    environment:
+      SWAGGER_JSON: /etc/swagger/swagger.yaml
+    ports:
+      - "8081:8080"

@@ -1,0 +1,121 @@
+openapi: 3.0.1
+info:
+  title: "go-web-applocation-sandbox"
+  version: "1.0"
+servers:
+  - url: "http://localhost:8080"
+
+paths:
+  /health/:
+    get:
+      tags:
+        - health
+      responses:
+        200:
+          description: "hello"
+          schema:
+            type: string
+  /pages/:
+    get:
+      tags:
+        - pages
+      parameters:
+        - in: query
+          name: q
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pages'
+    post:
+      tags:
+        - pages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Page'
+        required: true
+      responses:
+        201:
+          description: "created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+
+  /pages/{title}:
+    get:
+      tags:
+        - pages
+      parameters:
+        - in: path
+          name: title
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+    put:
+      tags:
+        - pages
+      parameters:
+        - in: path
+          name: title
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PagePutPayload'
+        required: true
+      responses:
+        200:
+          description: "ok"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page'
+    delete:
+      tags:
+        - pages
+      parameters:
+        - in: path
+          name: title
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: "no content"
+
+components:
+  schemas:
+    PagePutPayload:
+      type: object
+      properties:
+        body:
+          type: string
+    Page:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+    Pages:
+      type: array
+      items:
+        $ref: '#/components/schemas/Page'
