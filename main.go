@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
+	"net/http"
 )
 
 type Page struct {
@@ -13,11 +15,17 @@ type Page struct {
 const pageDir = "pages/"
 
 func main() {
-	p1 := &Page{Title: "hello", Body: "Hello World"}
-	p1.save()
+	//p1 := &Page{Title: "hello", Body: "Hello World"}
+	//p1.save()
+	//
+	//p2, _ := loadPage("hello")
+	//fmt.Println(p2.Body)
+	http.HandleFunc("/health/", healthHandler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
 
-	p2, _ := loadPage("hello")
-	fmt.Println(p2.Body)
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "hello")
 }
 
 func (p *Page) save() error {
